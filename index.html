@@ -3,254 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nguyen Dang Dung | Profile & Dashboard</title>
+    <title>Nguyen Dang Dung | Profile</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #f1f5f9;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --accent: #0ea5e9;
-            --accent-hover: #0284c7;
-            --metro-color: #10b981; /* Màu xanh lá đặc trưng của Hanoi Metro */
-        }
-
+        /* Reset và cấu hình cơ bản */
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0a0a0a; /* Nền xám đen tối nhất */
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+
+        /* Lớp chứa Canvas cố định làm nền */
+        #canvas-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: auto; /* Cho phép tương tác chuột với canvas */
+        }
+
+        /* Lớp chứa nội dung đè lên trên Canvas */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            line-height: 1.5;
+            pointer-events: none; /* Tránh cản trở chuột tới canvas ở phần nền */
         }
 
-        /* Bố cục Grid Responsive */
-        .layout-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr; /* Mặc định 1 cột cho Mobile */
-            gap: 20px;
-            align-items: start;
-        }
-
-        /* Desktop: 3 Cột */
-        @media (min-width: 1024px) {
-            .layout-container {
-                grid-template-columns: 320px 1fr 1fr; 
-            }
-        }
-
-        /* Tablet: 2 Cột */
-        @media (min-width: 768px) and (max-width: 1023px) {
-            .layout-container {
-                grid-template-columns: 350px 1fr;
-            }
-        }
-
-        /* Style chung cho các thẻ (Cards) */
-        .card {
-            background: var(--card-bg);
+        /* Profile Card với hiệu ứng Kính (Glassmorphism) đen/xám */
+        .profile-card {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            pointer-events: auto; /* Cho phép click vào các link trong card */
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Ảnh đại diện */
+        .avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #555;
+            padding: 4px;
+            background-color: #222;
+            margin-bottom: 20px;
+            /* Tự động chuyển ảnh màu thành ảnh đen trắng */
+            filter: grayscale(100%);
+            transition: filter 0.5s ease;
+        }
+
+        .avatar:hover {
+            filter: grayscale(30%); /* Hiện chút màu khi di chuột vào ảnh */
+        }
+
+        /* Thông tin chữ */
+        .name {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: #ffffff;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: #888;
+            margin-bottom: 20px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        /* Từ khóa kỹ năng */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #aaa;
+            letter-spacing: 0.5px;
+        }
+
+        /* Nút liên kết */
+        .links {
             display: flex;
             flex-direction: column;
+            gap: 12px;
         }
 
-        .card-header {
-            padding: 20px;
-            border-bottom: 1px solid #e2e8f0;
-            font-weight: bold;
-            font-size: 1.1rem;
+        .btn {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-        }
-
-        .card-body {
-            padding: 20px;
-            max-height: 600px; /* Chiều cao cố định để cuộn trên máy tính */
-            overflow-y: auto;
-        }
-
-        /* --- Cột 1: Profile Card --- */
-        .header-bg {
-            height: 120px;
-            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
-        }
-        .avatar-container {
-            margin-top: -60px;
-            text-align: center;
-        }
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid var(--card-bg);
-            object-fit: cover;
-            background-color: #fff;
-        }
-        .info { padding: 20px; text-align: center; }
-        .name { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
-        .age-role { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 15px; }
-        .description { font-size: 0.9rem; margin-bottom: 20px; }
-        
-        .links { display: flex; flex-direction: column; gap: 10px; }
-        .link-btn {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            padding: 12px 15px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-        .btn-primary { background-color: var(--accent); color: white; }
-        .btn-primary:hover { background-color: var(--accent-hover); }
-        .btn-outline { background-color: transparent; color: var(--text-main); border: 1px solid #cbd5e1; }
-        .btn-outline:hover { background-color: #f8fafc; border-color: #94a3b8; }
-        .btn-metro { background-color: var(--metro-color); color: white; }
-        .btn-metro:hover { background-color: #059669; }
-
-        /* --- Cột 2: News Feed --- */
-        .news-item {
-            border-left: 3px solid var(--metro-color);
-            padding-left: 15px;
-            margin-bottom: 20px;
-        }
-        .news-item:last-child { margin-bottom: 0; }
-        .news-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
-        .news-title { font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: var(--text-main); text-decoration: none; display: block;}
-        .news-title:hover { color: var(--metro-color); }
-        .news-desc { font-size: 0.9rem; color: var(--text-muted); }
-
-        /* --- Cột 3: Album --- */
-        .album-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .album-grid img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
+            padding: 14px 20px;
             border-radius: 8px;
-            background: #e2e8f0;
-        }
-        .album-banner {
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            border: 1px solid #444;
+            color: #ddd;
+            background: rgba(0, 0, 0, 0.3);
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .btn:hover {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
 
     </style>
 </head>
 <body>
 
-    <div class="layout-container">
-        
-        <!-- Cột 1: Profile -->
-        <div class="card">
-            <div class="header-bg"></div>
-            <div class="info">
-                <div class="avatar-container">
-                    <img src="avatar.jpg" alt="Nguyen Dang Dung" class="avatar">
-                </div>
-                <h1 class="name">Nguyen Dang Dung</h1>
-                <div class="age-role"><span id="age"></span> tuổi | Quản lý hệ thống ĐSĐT</div>
-                <p class="description">
-                    Đam mê Network Administration, Home Automation & Self-hosting. Hiện đang công tác và quản lý hệ thống đường sắt đô thị tại thủ đô.
-                </p>
-                <div class="links">
-                    <a href="mailto:me@nguyendj.com" class="link-btn btn-primary">
-                        <i class="fas fa-envelope"></i> me@nguyendj.com
-                    </a>
-                    <a href="https://nguyendj.com" target="_blank" class="link-btn btn-outline">
-                        <i class="fas fa-globe"></i> Website Cá Nhân
-                    </a>
-                </div>
-            </div>
-        </div>
+    <!-- Canvas làm nền -->
+    <canvas id="canvas-background"></canvas>
 
-        <!-- Cột 2: News Feed Hanoi Metro -->
-        <div class="card">
-            <div class="card-header" style="color: var(--metro-color);">
-                <i class="fas fa-train-subway"></i> Tin tức Hanoi Metro
+    <!-- Nội dung Profile -->
+    <div class="content-wrapper">
+        <div class="profile-card">
+            <!-- Đảm bảo bạn có file avatar.jpg ở cùng thư mục -->
+            <img src="avatar.jpg" alt="Nguyen Dang Dung" class="avatar" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80'">
+            
+            <h1 class="name">Nguyen Dang Dung</h1>
+            <div class="subtitle">
+                <span id="age"></span> TUỔI &nbsp;|&nbsp; QUẢN LÝ HỆ THỐNG ĐSĐT
             </div>
-            <div class="card-body">
-                <!-- Nút chuyển tới trang chính của công ty -->
-                <a href="http://hanoimetro.net.vn/" target="_blank" class="link-btn btn-metro" style="margin-bottom: 20px;">
-                    Hanoi Metro - Hành trình xanh
+            
+            <p class="description">
+                Quản lý hệ thống đường sắt đô thị. Đam mê quản trị hệ thống, tự động hóa và giải pháp tự lưu trữ. Xây dựng các kết nối bền vững từ không gian mạng đến đời thực.
+            </p>
+
+            <div class="tags">
+                <span class="tag">Network Admin</span>
+                <span class="tag">Home Automation</span>
+                <span class="tag">Self-hosting</span>
+                <span class="tag">Metro Operations</span>
+            </div>
+            
+            <div class="links">
+                <a href="mailto:me@nguyendj.com" class="btn">
+                    <i class="fas fa-envelope"></i> me@nguyendj.com
                 </a>
-
-                <div class="news-item">
-                    <div class="news-date">Cập nhật mới nhất</div>
-                    <a href="http://hanoimetro.net.vn/" target="_blank" class="news-title">Tiến độ các tuyến đường sắt đô thị tại Hà Nội</a>
-                    <div class="news-desc">Cập nhật tình hình vận hành và các dự án mở rộng mạng lưới đường sắt đô thị nhằm giảm tải giao thông thủ đô.</div>
-                </div>
-
-                <div class="news-item">
-                    <div class="news-date">Tuyến 3: Nhổn - Ga Hà Nội</div>
-                    <a href="http://hanoimetro.net.vn/" target="_blank" class="news-title">Thông tin vận hành Tuyến số 3</a>
-                    <div class="news-desc">Đảm bảo an toàn và tối ưu hóa hệ thống vận hành tự động trên tuyến Nhổn - Ga Hà Nội.</div>
-                </div>
-
-                <div class="news-item">
-                    <div class="news-date">Tuyến 2A: Cát Linh - Hà Đông</div>
-                    <a href="http://hanoimetro.net.vn/" target="_blank" class="news-title">Duy trì tỷ lệ đúng giờ trên 99%</a>
-                    <div class="news-desc">Tuyến 2A tiếp tục là phương tiện công cộng được người dân thủ đô tin dùng với hàng vạn lượt khách mỗi ngày.</div>
-                </div>
-                
-                <div class="news-item">
-                    <div class="news-date">Công nghệ & Hệ thống</div>
-                    <a href="#" class="news-title">Ứng dụng chuyển đổi số trong quản lý điều hành</a>
-                    <div class="news-desc">Tích hợp các hệ thống Network Administration vào giám sát lưu lượng và an toàn chạy tàu.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Cột 3: Album Ảnh -->
-        <div class="card">
-            <div class="card-header" style="color: #ea4335;">
-                <i class="fas fa-images"></i> Khoảnh khắc & Công việc
-            </div>
-            <div class="card-body">
-                <p style="font-size: 0.9rem; margin-bottom: 15px; color: var(--text-muted);">
-                    Một số hình ảnh về công việc quản lý, hệ thống và cuộc sống hàng ngày.
-                </p>
-
-                <!-- Lưới ảnh minh họa (hiện đang dùng ảnh placeholder, bạn có thể tự thay link thật) -->
-                <div class="album-grid">
-                    <img src="https://images.unsplash.com/photo-1548625361-ec8537138386?w=400&q=80" alt="Metro">
-                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=400&q=80" alt="Network">
-                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80" alt="Tech">
-                    <img src="https://images.unsplash.com/photo-1558002038-1055907df827?w=400&q=80" alt="Hanoi">
-                </div>
-
-                <!-- Nút liên kết tới Album Google Photos -->
-                <a href="https://photos.app.goo.gl/g3RnNaF6Wrc5UXLE6" target="_blank" class="link-btn btn-outline" style="border-color: #ea4335; color: #ea4335; margin-top: 10px;">
-                    <i class="fab fa-google"></i> Mở Album Google Photos
+                <a href="https://nguyendj.com" target="_blank" class="btn">
+                    <i class="fas fa-globe"></i> nguyendj.com
+                </a>
+                <a href="http://hanoimetro.net.vn/" target="_blank" class="btn">
+                    <i class="fas fa-train"></i> Hanoi Metro
+                </a>
+                <a href="https://photos.app.goo.gl/g3RnNaF6Wrc5UXLE6" target="_blank" class="btn">
+                    <i class="fas fa-images"></i> Album Ảnh (Google Photos)
                 </a>
             </div>
         </div>
-
     </div>
 
     <script>
-        // Script tự động tính tuổi
+        // --- 1. Tự động tính tuổi ---
         const birthYear = 1981;
         const currentYear = new Date().getFullYear();
         document.getElementById('age').innerText = currentYear - birthYear;
+
+        // --- 2. Cấu hình hiệu ứng Canvas (Network/Metro Nodes) ---
+        const canvas = document.getElementById('canvas-background');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+        
+        // Tương tác chuột
+        let mouse = { x: null, y: null, radius: 150 };
+
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
+        });
+        window.addEventListener('mouseout', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // Điều chỉnh kích thước canvas khi resize cửa sổ
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initParticles();
+        }
+
+        // Lớp đối tượng Hạt (Node)
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 1; // Vận tốc x
+                this.vy = (Math.random() - 0.5) * 1; // Vận tốc y
+                this.radius = Math.random() * 2 + 1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#666666'; // Màu điểm nút (xám)
+                ctx.fill();
+            }
+
+            update() {
+                // Va chạm với biên
+                if (this.x > width || this.x < 0) this.vx = -this.vx;
+                if (this.y > height || this.y < 0) this.vy = -this.vy;
+
+                // Tương tác dạt ra khi chuột đến gần
+                if (mouse.x != null && mouse.y != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < mouse.radius) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        
+                        this.x -= forceDirectionX * force * 2;
+                        this.y -= forceDirectionY * force * 2;
+                    }
+                }
+
+                this.x += this.vx;
+                this.y += this.vy;
+            }
+        }
+
+        // Khởi tạo danh sách các hạt
+        function initParticles() {
+            particles = [];
+            // Số lượng hạt phụ thuộc vào diện tích màn hình để tránh giật lag trên mobile
+            const numberOfParticles = Math.floor((width * height) / 15000); 
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // Vòng lặp vẽ Animation
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+
+                // Vẽ đường nối giữa các hạt gần nhau (giống mạng lưới network/metro)
+                for (let j = i; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+
+                    // Nếu khoảng cách nhỏ hơn 120px thì nối đường
+                    if (distance < 120) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(150, 150, 150, ${1 - distance/120})`; // Đường kẻ xám, mờ dần theo khoảng cách
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        // Bắt đầu chạy
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas(); // Setup kích thước ban đầu và tạo hạt
+        animate(); // Bắt đầu vòng lặp
+
     </script>
 </body>
 </html>
