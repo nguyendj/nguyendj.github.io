@@ -3,80 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nguyen Dang Dung | Bio</title>
+    <title>Nguyen Dang Dung | Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f4f4f9;
-            --text-color: #333;
-            --accent-color: #007bff;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #0ea5e9;
+            --accent-hover: #0284c7;
         }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
-        .bio-card {
-            background: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            max-width: 400px;
+
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
             text-align: center;
+            position: relative;
         }
-        .bio-card img {
-            width: 120px;
-            height: 120px;
+
+        /* Phần nền màu phía trên thẻ */
+        .header-bg {
+            height: 140px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+        }
+
+        .avatar-container {
+            margin-top: -70px;
+            position: relative;
+        }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
+            border: 5px solid var(--card-bg);
             object-fit: cover;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info {
+            padding: 20px 30px 40px;
+        }
+
+        .name {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: var(--text-main);
+        }
+
+        .age-role {
+            font-size: 1rem;
+            color: var(--text-muted);
             margin-bottom: 20px;
-            border: 3px solid var(--accent-color);
+            font-weight: 500;
         }
-        .bio-card h1 {
-            margin: 0 0 10px;
-            font-size: 24px;
-        }
-        .bio-card p {
-            color: #666;
+
+        .description {
+            font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 25px;
+            color: var(--text-main);
+            margin-bottom: 30px;
+            padding: 0 10px;
         }
+
         .links {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-        .links a {
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 20px;
+            border-radius: 12px;
             text-decoration: none;
-            color: #fff;
-            background-color: var(--accent-color);
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: background-color 0.3s;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 1rem;
         }
-        .links a:hover {
-            background-color: #0056b3;
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
         }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8fafc;
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline i {
+            color: var(--accent);
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="bio-card">
-        <img src="https://via.placeholder.com/150" alt="Avatar">
-        <h1>Nguyen Dang Dung</h1>
-        <p>Quản lý hệ thống đường sắt đô thị | Đam mê Network Administration, Home Automation & Self-hosting.</p>
-        
-        <div class="links">
-            <a href="mailto:ttcnvgh@gmail.com">Liên hệ Email</a>
-            <a href="https://github.com/yourusername" target="_blank">GitHub</a>
-            <a href="#" target="_blank">LinkedIn</a>
+    <div class="profile-card">
+        <div class="header-bg"></div>
+        <div class="info">
+            <div class="avatar-container">
+                <img src="avatar.jpg" alt="Nguyen Dang Dung" class="avatar">
+            </div>
+            
+            <h1 class="name">Nguyen Dang Dung</h1>
+            <div class="age-role"><span id="age"></span> tuổi | Quản lý hệ thống ĐSĐT</div>
+            
+            <p class="description">
+                Đam mê Network Administration, Home Automation & Self-hosting. Hiện đang công tác và quản lý hệ thống đường sắt đô thị tại thủ đô.
+            </p>
+            
+            <div class="links">
+                <a href="mailto:me@nguyendj.com" class="link-btn btn-primary">
+                    <i class="fas fa-envelope"></i> me@nguyendj.com
+                </a>
+                <a href="https://nguyendj.com" target="_blank" class="link-btn btn-outline">
+                    <i class="fas fa-globe"></i> Website Cá Nhân
+                </a>
+                <a href="http://hanoimetro.net.vn/" target="_blank" class="link-btn btn-outline">
+                    <i class="fas fa-train-subway"></i> Hanoi Metro - Hành trình xanh
+                </a>
+            </div>
         </div>
     </div>
 
+    <script>
+        // Script tự động tính tuổi
+        const birthYear = 1981;
+        const currentYear = new Date().getFullYear();
+        document.getElementById('age').innerText = currentYear - birthYear;
+    </script>
 </body>
 </html>
