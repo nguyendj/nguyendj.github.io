@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nguyen Dang Jung | Profile</title>
+    <title>Nguyen Dang Dung | Profile & Dashboard</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
@@ -13,6 +13,7 @@
             --text-muted: #64748b;
             --accent: #0ea5e9;
             --accent-hover: #0284c7;
+            --metro-color: #10b981; /* Màu xanh lá đặc trưng của Hanoi Metro */
         }
 
         * {
@@ -25,148 +26,224 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             padding: 20px;
+            line-height: 1.5;
         }
 
-        .profile-card {
+        /* Bố cục Grid Responsive */
+        .layout-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr; /* Mặc định 1 cột cho Mobile */
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* Desktop: 3 Cột */
+        @media (min-width: 1024px) {
+            .layout-container {
+                grid-template-columns: 320px 1fr 1fr; 
+            }
+        }
+
+        /* Tablet: 2 Cột */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .layout-container {
+                grid-template-columns: 350px 1fr;
+            }
+        }
+
+        /* Style chung cho các thẻ (Cards) */
+        .card {
             background: var(--card-bg);
-            border-radius: 24px;
-            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 420px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            text-align: center;
-            position: relative;
-        }
-
-        /* Phần nền màu phía trên thẻ */
-        .header-bg {
-            height: 140px;
-            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
-        }
-
-        .avatar-container {
-            margin-top: -70px;
-            position: relative;
-        }
-
-        .avatar {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 5px solid var(--card-bg);
-            object-fit: cover;
-            background-color: #fff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .info {
-            padding: 20px 30px 40px;
-        }
-
-        .name {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin-bottom: 5px;
-            color: var(--text-main);
-        }
-
-        .age-role {
-            font-size: 1rem;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            font-weight: 500;
-        }
-
-        .description {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--text-main);
-            margin-bottom: 30px;
-            padding: 0 10px;
-        }
-
-        .links {
             display: flex;
             flex-direction: column;
-            gap: 15px;
         }
 
-        .link-btn {
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: bold;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 12px;
-            padding: 14px 20px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            gap: 10px;
         }
 
-        .btn-primary {
-            background-color: var(--accent);
-            color: white;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        .card-body {
+            padding: 20px;
+            max-height: 600px; /* Chiều cao cố định để cuộn trên máy tính */
+            overflow-y: auto;
         }
 
-        .btn-primary:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+        /* --- Cột 1: Profile Card --- */
+        .header-bg {
+            height: 120px;
+            background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
         }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 1px solid #cbd5e1;
+        .avatar-container {
+            margin-top: -60px;
+            text-align: center;
         }
-
-        .btn-outline:hover {
-            background-color: #f8fafc;
-            border-color: #94a3b8;
-            transform: translateY(-2px);
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--card-bg);
+            object-fit: cover;
+            background-color: #fff;
         }
+        .info { padding: 20px; text-align: center; }
+        .name { font-size: 1.5rem; font-weight: 700; margin-bottom: 5px; }
+        .age-role { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 15px; }
+        .description { font-size: 0.9rem; margin-bottom: 20px; }
         
-        .btn-outline i {
-            color: var(--accent);
+        .links { display: flex; flex-direction: column; gap: 10px; }
+        .link-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 12px 15px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 0.95rem;
+            transition: all 0.3s ease;
         }
+        .btn-primary { background-color: var(--accent); color: white; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-outline { background-color: transparent; color: var(--text-main); border: 1px solid #cbd5e1; }
+        .btn-outline:hover { background-color: #f8fafc; border-color: #94a3b8; }
+        .btn-metro { background-color: var(--metro-color); color: white; }
+        .btn-metro:hover { background-color: #059669; }
+
+        /* --- Cột 2: News Feed --- */
+        .news-item {
+            border-left: 3px solid var(--metro-color);
+            padding-left: 15px;
+            margin-bottom: 20px;
+        }
+        .news-item:last-child { margin-bottom: 0; }
+        .news-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 5px; }
+        .news-title { font-weight: 600; font-size: 1rem; margin-bottom: 5px; color: var(--text-main); text-decoration: none; display: block;}
+        .news-title:hover { color: var(--metro-color); }
+        .news-desc { font-size: 0.9rem; color: var(--text-muted); }
+
+        /* --- Cột 3: Album --- */
+        .album-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .album-grid img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #e2e8f0;
+        }
+        .album-banner {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
     </style>
 </head>
 <body>
 
-    <div class="profile-card">
-        <div class="header-bg"></div>
-        <div class="info">
-            <div class="avatar-container">
-                <img src="avatar.jpg" alt="Nguyen Dang Dung" class="avatar">
+    <div class="layout-container">
+        
+        <!-- Cột 1: Profile -->
+        <div class="card">
+            <div class="header-bg"></div>
+            <div class="info">
+                <div class="avatar-container">
+                    <img src="avatar.jpg" alt="Nguyen Dang Dung" class="avatar">
+                </div>
+                <h1 class="name">Nguyen Dang Dung</h1>
+                <div class="age-role"><span id="age"></span> tuổi | Quản lý hệ thống ĐSĐT</div>
+                <p class="description">
+                    Đam mê Network Administration, Home Automation & Self-hosting. Hiện đang công tác và quản lý hệ thống đường sắt đô thị tại thủ đô.
+                </p>
+                <div class="links">
+                    <a href="mailto:me@nguyendj.com" class="link-btn btn-primary">
+                        <i class="fas fa-envelope"></i> me@nguyendj.com
+                    </a>
+                    <a href="https://nguyendj.com" target="_blank" class="link-btn btn-outline">
+                        <i class="fas fa-globe"></i> Website Cá Nhân
+                    </a>
+                </div>
             </div>
-            
-            <h1 class="name">Nguyen Dang Jung</h1>
-            <div class="age-role"><span id="age"></span> tuổi | Đường sắt đô thị Hà Nội</div>
-            
-            <p class="description">
-                Đam mê Network Administration, Home Automation & Self-hosting. Hiện đang công tác và quản lý hệ thống đường sắt đô thị tại thủ đô.
-            </p>
-            
-            <div class="links">
-                <a href="mailto:me@nguyendj.com" class="link-btn btn-primary">
-                    <i class="fas fa-envelope"></i> me@nguyendj.com
+        </div>
+
+        <!-- Cột 2: News Feed Hanoi Metro -->
+        <div class="card">
+            <div class="card-header" style="color: var(--metro-color);">
+                <i class="fas fa-train-subway"></i> Tin tức Hanoi Metro
+            </div>
+            <div class="card-body">
+                <!-- Nút chuyển tới trang chính của công ty -->
+                <a href="http://hanoimetro.net.vn/" target="_blank" class="link-btn btn-metro" style="margin-bottom: 20px;">
+                    Hanoi Metro - Hành trình xanh
                 </a>
-                <a href="https://nguyendj.com" target="_blank" class="link-btn btn-outline">
-                    <i class="fas fa-globe"></i> Website Cá Nhân
-                </a>
-                <a href="http://hanoimetro.net.vn/" target="_blank" class="link-btn btn-outline">
-                    <i class="fas fa-train-subway"></i> Hanoi Metro - Hành trình xanh
+
+                <div class="news-item">
+                    <div class="news-date">Cập nhật mới nhất</div>
+                    <a href="http://hanoimetro.net.vn/" target="_blank" class="news-title">Tiến độ các tuyến đường sắt đô thị tại Hà Nội</a>
+                    <div class="news-desc">Cập nhật tình hình vận hành và các dự án mở rộng mạng lưới đường sắt đô thị nhằm giảm tải giao thông thủ đô.</div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-date">Tuyến 3: Nhổn - Ga Hà Nội</div>
+                    <a href="http://hanoimetro.net.vn/" target="_blank" class="news-title">Thông tin vận hành Tuyến số 3</a>
+                    <div class="news-desc">Đảm bảo an toàn và tối ưu hóa hệ thống vận hành tự động trên tuyến Nhổn - Ga Hà Nội.</div>
+                </div>
+
+                <div class="news-item">
+                    <div class="news-date">Tuyến 2A: Cát Linh - Hà Đông</div>
+                    <a href="http://hanoimetro.net.vn/" target="_blank" class="news-title">Duy trì tỷ lệ đúng giờ trên 99%</a>
+                    <div class="news-desc">Tuyến 2A tiếp tục là phương tiện công cộng được người dân thủ đô tin dùng với hàng vạn lượt khách mỗi ngày.</div>
+                </div>
+                
+                <div class="news-item">
+                    <div class="news-date">Công nghệ & Hệ thống</div>
+                    <a href="#" class="news-title">Ứng dụng chuyển đổi số trong quản lý điều hành</a>
+                    <div class="news-desc">Tích hợp các hệ thống Network Administration vào giám sát lưu lượng và an toàn chạy tàu.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột 3: Album Ảnh -->
+        <div class="card">
+            <div class="card-header" style="color: #ea4335;">
+                <i class="fas fa-images"></i> Khoảnh khắc & Công việc
+            </div>
+            <div class="card-body">
+                <p style="font-size: 0.9rem; margin-bottom: 15px; color: var(--text-muted);">
+                    Một số hình ảnh về công việc quản lý, hệ thống và cuộc sống hàng ngày.
+                </p>
+
+                <!-- Lưới ảnh minh họa (hiện đang dùng ảnh placeholder, bạn có thể tự thay link thật) -->
+                <div class="album-grid">
+                    <img src="https://images.unsplash.com/photo-1548625361-ec8537138386?w=400&q=80" alt="Metro">
+                    <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=400&q=80" alt="Network">
+                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80" alt="Tech">
+                    <img src="https://images.unsplash.com/photo-1558002038-1055907df827?w=400&q=80" alt="Hanoi">
+                </div>
+
+                <!-- Nút liên kết tới Album Google Photos -->
+                <a href="https://photos.app.goo.gl/g3RnNaF6Wrc5UXLE6" target="_blank" class="link-btn btn-outline" style="border-color: #ea4335; color: #ea4335; margin-top: 10px;">
+                    <i class="fab fa-google"></i> Mở Album Google Photos
                 </a>
             </div>
         </div>
+
     </div>
 
     <script>
