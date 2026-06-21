@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nguyen Dang Dung | Dự Án & Hệ Thống</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <script>
+        const hour = new Date().getHours();
+        const isNight = hour < 6 || hour >= 18;
+        if (isNight) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    </script>
+
+    <style>
+        :root[data-theme="light"] {
+            --bg-color: #f4f6f9; --text-main: #111111; --text-muted: #555555;
+            --card-bg: rgba(255, 255, 255, 0.6); --card-border: rgba(0, 0, 0, 0.08);
+            --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            --item-bg: rgba(0, 0, 0, 0.03); --item-hover: #111111; --item-hover-text: #ffffff;
+        }
+        :root[data-theme="dark"] {
+            --bg-color: #0a0a0a; --text-main: #ffffff; --text-muted: #aaaaaa;
+            --card-bg: rgba(30, 30, 30, 0.6); --card-border: rgba(255, 255, 255, 0.1);
+            --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --item-bg: rgba(255, 255, 255, 0.05); --item-hover: #ffffff; --item-hover-text: #000000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            width: 100%; height: 100%; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color); color: var(--text-main); overflow-x: hidden;
+            transition: background-color 0.8s ease, color 0.8s ease;
+        }
+
+        #canvas-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: auto; }
+        .content-wrapper { position: relative; z-index: 1; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; pointer-events: none; }
+        
+        .profile-card {
+            background: var(--card-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border); border-radius: 20px; padding: 40px;
+            width: 100%; max-width: 480px; box-shadow: var(--card-shadow);
+            pointer-events: auto; animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex; justify-content: center; gap: 20px; margin-bottom: 25px;
+            border-bottom: 1px solid var(--card-border); padding-bottom: 15px;
+        }
+        .nav-link {
+            text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 1rem;
+            transition: all 0.3s ease; position: relative;
+        }
+        .nav-link:hover, .nav-link.active { color: var(--text-main); }
+        .nav-link.active::after {
+            content: ''; position: absolute; bottom: -16px; left: 0; width: 100%; height: 2px; background-color: var(--text-main);
+        }
+
+        /* Projects List */
+        .about-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 20px; text-transform: uppercase; text-align: center; }
+        
+        .projects-list {
+            display: flex; flex-direction: column; gap: 12px;
+            max-height: 400px; overflow-y: auto; padding-right: 5px;
+        }
+        .projects-list::-webkit-scrollbar { width: 4px; }
+        .projects-list::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 4px; }
+
+        .project-item {
+            display: flex; align-items: center; padding: 15px; background: var(--item-bg);
+            border: 1px solid var(--card-border); border-radius: 12px; text-decoration: none;
+            color: var(--text-main); transition: all 0.3s ease; text-align: left;
+        }
+        .project-item:hover {
+            background: var(--item-hover); color: var(--item-hover-text); transform: translateY(-2px);
+        }
+        .project-icon { font-size: 1.5rem; width: 45px; display: flex; justify-content: center; color: var(--text-muted); transition: color 0.3s ease; }
+        .project-item:hover .project-icon { color: var(--item-hover-text); }
+        .project-info { flex-grow: 1; }
+        .project-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 3px; }
+        .project-url { font-size: 0.85rem; color: var(--text-muted); transition: color 0.3s ease; }
+        .project-item:hover .project-url { color: var(--item-hover-text); opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-background"></canvas>
+
+    <div class="content-wrapper">
+        <div class="profile-card">
+            
+            <!-- Navigation -->
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">Trang Chủ</a>
+                <a href="about.html" class="nav-link">Về Tôi</a>
+                <a href="project.html" class="nav-link active">Dự Án</a>
+            </div>
+
+            <h2 class="about-title">Các Hệ Thống Self-hosted</h2>
+            
+            <div class="projects-list">
+                <a href="https://hd.nguyendj.com" target="_blank" class="project-item">
+                    <div class="project-icon"><i class="fas fa-server"></i></div>
+                    <div class="project-info">
+                        <div class="project-title">Home Dashboard</div>
+                        <div class="project-url">hd.nguyendj.com</div>
+                    </div>
+                </a>
+
+                <a href="https://zima.nguyendj.com" target="_blank" class="project-item">
+                    <div class="project-icon"><i class="fas fa-network-wired"></i></div>
+                    <div class="project-info">
+                        <div class="project-title">ZimaOS Hệ Thống</div>
+                        <div class="project-url">zima.nguyendj.com</div>
+                    </div>
+                </a>
+
+                <a href="https://tm.nguyendj.com" target="_blank" class="project-item">
+                    <div class="project-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="project-info">
+                        <div class="project-title">Traffic / Task Manager</div>
+                        <div class="project-url">tm.nguyendj.com</div>
+                    </div>
+                </a>
+
+                <a href="https://ts.nguyendj.com" target="_blank" class="project-item">
+                    <div class="project-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="project-info">
+                        <div class="project-title">Tailscale VPN Service</div>
+                        <div class="project-url">ts.nguyendj.com</div>
+                    </div>
+                </a>
+
+                <a href="https://gfn.nguyendj.com" target="_blank" class="project-item">
+                    <div class="project-icon"><i class="fas fa-chart-pie"></i></div>
+                    <div class="project-info">
+                        <div class="project-title">Grafana Analytics</div>
+                        <div class="project-url">gfn.nguyendj.com</div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Canvas Logic (Giữ nguyên từ index)
+        const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
+        const nodeColor = isDarkTheme ? '#555555' : '#bbbbbb';
+        const lineRgb = isDarkTheme ? '150, 150, 150' : '120, 120, 120';
+        const canvas = document.getElementById('canvas-background');
+        const ctx = canvas.getContext('2d');
+        let width, height; let particles = []; let mouse = { x: null, y: null, radius: 150 };
+
+        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('mouseout', () => { mouse.x = null; mouse.y = null; });
+
+        function resizeCanvas() {
+            width = window.innerWidth; height = window.innerHeight;
+            canvas.width = width; canvas.height = height; initParticles();
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width; this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 1.2; this.vy = (Math.random() - 0.5) * 1.2;
+                this.radius = Math.random() * 2 + 1;
+            }
+            draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fillStyle = nodeColor; ctx.fill(); }
+            update() {
+                if (this.x > width || this.x < 0) this.vx = -this.vx;
+                if (this.y > height || this.y < 0) this.vy = -this.vy;
+                if (mouse.x != null && mouse.y != null) {
+                    let dx = mouse.x - this.x, dy = mouse.y - this.y, distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius) {
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        this.x -= (dx / distance) * force * 2; this.y -= (dy / distance) * force * 2;
+                    }
+                }
+                this.x += this.vx; this.y += this.vy;
+            }
+        }
+        function initParticles() {
+            particles = []; const num = Math.floor((width * height) / 13000); 
+            for (let i = 0; i < num; i++) particles.push(new Particle());
+        }
+        function animate() {
+            requestAnimationFrame(animate); ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update(); particles[i].draw();
+                for (let j = i; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 120) {
+                        ctx.beginPath(); ctx.strokeStyle = `rgba(${lineRgb}, ${1 - distance/120})`; ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y); ctx.stroke();
+                    }
+                }
+            }
+        }
+        window.addEventListener('resize', resizeCanvas); resizeCanvas(); animate(); 
+    </script>
+</body>
+</html>
