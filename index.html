@@ -215,6 +215,39 @@
             font-size: 1.1rem;
         }
 
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 15px;
+        }
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-link:hover {
+            color: var(--text-main);
+        }
+        .nav-link.active {
+            color: var(--text-main);
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--text-main);
+        }
+
     </style>
 </head>
 <body>
@@ -225,12 +258,20 @@
     <!-- Nội dung Profile -->
     <div class="content-wrapper">
         <div class="profile-card">
+            
+            <!-- Navigation -->
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link active">Trang Chủ</a>
+                <a href="about.html" class="nav-link">Về Tôi</a>
+                <a href="project.html" class="nav-link">Dự Án</a>
+            </div>
+
             <!-- Đảm bảo bạn có file avatar.jpg ở cùng thư mục -->
-            <img src="avatar.jpg" alt="Nguyen Dang Dung" class="avatar" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80'">
+            <img src="avatar.jpg" alt="Nguyễn Đặng Dũng" class="avatar" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80'">
             
             <h1 class="name">Nguyễn Đặng Dũng</h1>
             <div class="subtitle">
-                <span id="age"></span> TUỔI &nbsp;|&nbsp; QUẢN LÝ VẬN HÀNH NHÀ GA ĐSĐT
+                <span id="age"></span> TUỔI &nbsp;|&nbsp; QUẢN LÝ VẬN HÀNH ĐSĐT
             </div>
             
             <p class="description">
