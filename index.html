@@ -248,6 +248,45 @@
             background-color: var(--text-main);
         }
 
+        /* View Counter */
+        .view-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        .view-counter:hover {
+            color: var(--text-main);
+            transform: translateY(-2px);
+        }
+
+        .view-counter i {
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 480px) {
+            .view-counter {
+                bottom: 15px;
+                right: 15px;
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -302,18 +341,41 @@
         </div>
     </div>
 
+    <!-- View Counter -->
+    <div class="view-counter">
+        <i class="fas fa-eye"></i>
+        <span id="view-count">0</span>
+    </div>
+
     <script>
         // --- 1. Tự động tính tuổi ---
         const birthYear = 1981;
         const currentYear = new Date().getFullYear();
         document.getElementById('age').innerText = currentYear - birthYear;
 
-        // --- 2. Xác định biến màu Canvas dựa theo Theme hiện tại ---
+        // --- 2. View Counter ---
+        function updateViewCount() {
+            const viewCountElement = document.getElementById('view-count');
+            let viewCount = localStorage.getItem('pageViews');
+            
+            if (viewCount === null) {
+                viewCount = 1;
+            } else {
+                viewCount = parseInt(viewCount) + 1;
+            }
+            
+            localStorage.setItem('pageViews', viewCount);
+            viewCountElement.innerText = viewCount;
+        }
+        
+        updateViewCount();
+
+        // --- 3. Xác định biến màu Canvas dựa theo Theme hiện tại ---
         const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
         const nodeColor = isDarkTheme ? '#555555' : '#bbbbbb'; // Tối thì hạt màu xám đen, Sáng thì hạt màu xám nhạt
         const lineRgb = isDarkTheme ? '150, 150, 150' : '120, 120, 120'; // Base màu cho đường nối
 
-        // --- 3. Cấu hình hiệu ứng Canvas (Network/Metro Nodes) ---
+        // --- 4. Cấu hình hiệu ứng Canvas (Network/Metro Nodes) ---
         const canvas = document.getElementById('canvas-background');
         const ctx = canvas.getContext('2d');
 
