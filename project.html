@@ -76,7 +76,7 @@
         .project-item {
             display: flex; align-items: center; padding: 15px; background: var(--item-bg);
             border: 1px solid var(--card-border); border-radius: 12px; text-decoration: none;
-            color: var(--text-main); transition: all 0.3s ease; text-align: left;
+            color: var(--text-main); transition: all 0.3s ease; text-align: left; cursor: pointer;
         }
         .project-item:hover {
             background: var(--item-hover); color: var(--item-hover-text); transform: translateY(-2px);
@@ -87,6 +87,19 @@
         .project-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 3px; }
         .project-url { font-size: 0.85rem; color: var(--text-muted); transition: color 0.3s ease; }
         .project-item:hover .project-url { color: var(--item-hover-text); opacity: 0.8; }
+
+        /* Offline Message */
+        #offline-message {
+            display: none; text-align: center; padding: 20px;
+            background: rgba(255, 100, 100, 0.1); border: 1px solid rgba(255, 100, 100, 0.3);
+            border-radius: 12px; color: var(--text-main); font-weight: 600;
+        }
+        #projects-content {
+            display: none;
+        }
+        #projects-content.online {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -103,54 +116,82 @@
                 <a href="project.html" class="nav-link active">Dự Án</a>
             </div>
 
-            <h2 class="about-title">Các Hệ Thống Self-hosted</h2>
-            
-            <div class="projects-list">
-                <a href="https://hb.nguyendj.com" target="_blank" class="project-item">
-                    <div class="project-icon"><i class="fas fa-server"></i></div>
-                    <div class="project-info">
-                        <div class="project-title">HomeBridge Dashboard</div>
-                        <div class="project-url">hb.nguyendj.com</div>
-                    </div>
-                </a>
+            <div id="offline-message">
+                ⚠️ Bạn đang offline. Vui lòng kết nối internet để xem danh sách dự án.
+            </div>
 
-                <a href="https://zima.nguyendj.com" target="_blank" class="project-item">
-                    <div class="project-icon"><i class="fas fa-network-wired"></i></div>
-                    <div class="project-info">
-                        <div class="project-title">ZimaOS</div>
-                        <div class="project-url">zima.nguyendj.com</div>
-                    </div>
-                </a>
+            <div id="projects-content">
+                <h2 class="about-title">Các Hệ Thống Self-hosted</h2>
+                
+                <div class="projects-list">
+                    <a href="https://hb.nguyendj.com" target="_blank" class="project-item">
+                        <div class="project-icon"><i class="fas fa-server"></i></div>
+                        <div class="project-info">
+                            <div class="project-title">HomeBridge Dashboard</div>
+                            <div class="project-url">hb.nguyendj.com</div>
+                        </div>
+                    </a>
 
-                <a href="https://tm.nguyendj.com" target="_blank" class="project-item">
-                    <div class="project-icon"><i class="fas fa-chart-line"></i></div>
-                    <div class="project-info">
-                        <div class="project-title">Transmission Downloader </div>
-                        <div class="project-url">tm.nguyendj.com</div>
-                    </div>
-                </a>
+                    <a href="https://zima.nguyendj.com" target="_blank" class="project-item">
+                        <div class="project-icon"><i class="fas fa-network-wired"></i></div>
+                        <div class="project-info">
+                            <div class="project-title">ZimaOS</div>
+                            <div class="project-url">zima.nguyendj.com</div>
+                        </div>
+                    </a>
 
-                <a href="https://ts.nguyendj.com" target="_blank" class="project-item">
-                    <div class="project-icon"><i class="fas fa-shield-alt"></i></div>
-                    <div class="project-info">
-                        <div class="project-title">Tailscale VPN Service</div>
-                        <div class="project-url">ts.nguyendj.com</div>
-                    </div>
-                </a>
+                    <a href="https://tm.nguyendj.com" target="_blank" class="project-item">
+                        <div class="project-icon"><i class="fas fa-chart-line"></i></div>
+                        <div class="project-info">
+                            <div class="project-title">Transmission Downloader </div>
+                            <div class="project-url">tm.nguyendj.com</div>
+                        </div>
+                    </a>
 
-                <a href="https://gfn.nguyendj.com" target="_blank" class="project-item">
-                    <div class="project-icon"><i class="fas fa-chart-pie"></i></div>
-                    <div class="project-info">
-                        <div class="project-title">GoflexNas</div>
-                        <div class="project-url">gfn.nguyendj.com</div>
-                    </div>
-                </a>
+                    <a href="https://ts.nguyendj.com" target="_blank" class="project-item">
+                        <div class="project-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="project-info">
+                            <div class="project-title">Tailscale VPN Service</div>
+                            <div class="project-url">ts.nguyendj.com</div>
+                        </div>
+                    </a>
+
+                    <a href="https://gfn.nguyendj.com" target="_blank" class="project-item">
+                        <div class="project-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="project-info">
+                            <div class="project-title">GoflexNas</div>
+                            <div class="project-url">gfn.nguyendj.com</div>
+                        </div>
+                    </a>
+                </div>
             </div>
 
         </div>
     </div>
 
     <script>
+        // Check internet connectivity
+        function checkOnlineStatus() {
+            const isOnline = navigator.onLine;
+            const projectsContent = document.getElementById('projects-content');
+            const offlineMessage = document.getElementById('offline-message');
+
+            if (isOnline) {
+                projectsContent.classList.add('online');
+                offlineMessage.style.display = 'none';
+            } else {
+                projectsContent.classList.remove('online');
+                offlineMessage.style.display = 'block';
+            }
+        }
+
+        // Check status on page load
+        window.addEventListener('load', checkOnlineStatus);
+        
+        // Listen for online/offline events
+        window.addEventListener('online', checkOnlineStatus);
+        window.addEventListener('offline', checkOnlineStatus);
+
         // Keep alive: ping the page itself every 5 minutes and refresh after 30 minutes of inactivity.
         const keepAliveInterval = 5 * 60 * 1000;
         const maxIdleBeforeReload = 30 * 60 * 1000;
