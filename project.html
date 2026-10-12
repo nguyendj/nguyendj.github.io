@@ -151,6 +151,30 @@
     </div>
 
     <script>
+        // Keep alive: ping the page itself every 5 minutes and refresh after 30 minutes of inactivity.
+        const keepAliveInterval = 5 * 60 * 1000;
+        const maxIdleBeforeReload = 30 * 60 * 1000;
+        let lastActivity = Date.now();
+
+        ['pointermove', 'keydown', 'touchstart', 'click', 'scroll'].forEach((eventName) => {
+            document.addEventListener(eventName, () => {
+                lastActivity = Date.now();
+            }, { passive: true });
+        });
+
+        function keepAlive() {
+            const url = `${window.location.href.split('?')[0]}?keepalive=${Date.now()}`;
+            fetch(url, { cache: 'no-store', mode: 'same-origin' }).catch(() => {});
+
+            if (Date.now() - lastActivity > maxIdleBeforeReload) {
+                window.location.reload();
+            }
+        }
+
+        setInterval(keepAlive, keepAliveInterval);
+    </script>
+
+    <script>
         // Canvas Logic (Giữ nguyên từ index)
         const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
         const nodeColor = isDarkTheme ? '#555555' : '#bbbbbb';
